@@ -1,87 +1,103 @@
 <?php
 
-espacio de nombres  App \ Http \ Controllers ;
+namespace App\Http\Controllers;
 
-use  Illuminate \ Http \ Request ;
-usar  App \ Modelos \ Casilla ;
+use Illuminate\Http\Request;
+use App\Models\Casilla;
 
 
-clase  CasillaController  extiende  Controlador
+class CasillaController extends Controller
 {
     /**
-     * Mostrar una lista del recurso.
+     * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Respuesta
+     * @return \Illuminate\Http\Response
      */
-     índice de función  pública ()
+    public function index()
     {
-        $ casillas = Casilla :: todos ();
-        volver  a ver ( 'casilla/list' , compact ( 'casillas' ));
+        $casillas = Casilla::all();
+        return view('casilla/list', compact('casillas'));
     }
 
     /**
-     * Mostrar el formulario para crear un nuevo recurso.
+     * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Respuesta
+     * @return \Illuminate\Http\Response
      */
-     función  pública crear ()
+    public function create()
     {
-        //
+        return view('casilla/create');
     }
 
     /**
-     * Almacene un recurso recién creado en el almacenamiento.
+     * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $solicitud
-     * @return \Illuminate\Http\Respuesta
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-     tienda de función  pública ( Solicitud $ solicitud ) 
+    public function store(Request $request)
     {
-        //
+        //print_r($request->all());
+        $request->validate([
+            'ubicacion' => 'required|max:100',
+        ]);
+        
+        $data['ubicacion'] = $request->ubicacion;
+        $casilla = Casilla::create($data);
+        return redirect('casilla')->with('success',
+        $casilla->ubicacion . ' guardado satisfactoriamente ...');
     }
 
     /**
-     * Mostrar el recurso especificado.
+     * Display the specified resource.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Respuesta
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-     espectáculo de función  pública ( $ id )
+    public function show($id)
     {
-        echo  "Elemento $id" ; /// "Elemento" . identificación de $
+        echo "Element $id"; /// "Element " . $id
     }
 
     /**
-     * Mostrar el formulario para editar el recurso especificado.
+     * Show the form for editing the specified resource.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Respuesta
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-     editar función  pública ( $ id )
+    public function edit($id)
     {
-        echo  "Elemento $id para editar" ;
+        $casilla = Casilla::find($id);
+        return view('casilla/edit', compact('casilla'));
     }
 
     /**
-     * Actualizar el recurso especificado en el almacenamiento.
+     * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $solicitud
-     * @param int $id
-     * @return \Illuminate\Http\Respuesta
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-     actualización de función  pública ( Solicitud $ solicitud , $ id ) 
+    public function update(Request $request, $id)
     {
-        echo  "Elemento $id actualizado" ;
+            $request->validate([
+                'ubicacion' => 'required|max:100',
+            ]);
+            $data['ubicacion']= $request->ubicacion;
+            Casilla::whereId($id)->update($data);
+            return redirect('casilla')
+            ->with('success', 'Actualizado correctamente...');
     }
 
     /**
-     * Eliminar el recurso especificado del almacenamiento.
+     * Remove the specified resource from storage.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Respuesta
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-     función  pública destruir ( $ id )
+    public function destroy($id)
     {
-        echo  "El elemento $id ha sido eliminado" ;
+        Casilla::whereId($id)->delete();
+        return redirect('casilla');
     }
 }
