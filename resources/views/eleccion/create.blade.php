@@ -7,7 +7,7 @@
 </style>
 <div class="card uper">
     <div class="card-header">
-        Agregar Casillas
+        Agregar Eleccion
     </div>
     <div class="card-body">
         @if ($errors->any())
@@ -19,14 +19,21 @@
             </ul>
         </div><br />
         @endif
-        <form method="post" action="{{ route('casilla.store') }} " 
+        <form method="post" action="{{ route('eleccion.store') }} " 
         enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group">
-                @csrf
-                <label for="ubicacion">Ubicación:</label>
-                <input type="text" class="form-control" name="ubicacion" />
+                <label for="periodo">Periodo:</label>
+                <input type="text" id="periodo"
+                 class="form-control" name="periodo" />
             </div>
+            <div class="form-group">
+                <label for="fecha">Periodo:</label>
+                <input type="text" id="fecha"
+                 class="form-control" name="fecha" />
+            </div>
+            
+
             <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
     </div>
