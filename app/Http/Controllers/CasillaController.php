@@ -16,7 +16,8 @@ class CasillaController extends Controller
     public function index()
     {
         $casillas = Casilla::all();
-        return view('casilla/list', compact('casillas'));
+        $today = now();
+        return view('casilla/list', compact('casillas','today'));
     }
 
     /**
@@ -38,9 +39,7 @@ class CasillaController extends Controller
     public function store(Request $request)
     {
         //print_r($request->all());
-        $request->validate([
-            'ubicacion' => 'required|max:100',
-        ]);
+        $this->validateData($request);
         
         $data['ubicacion'] = $request->ubicacion;
         $casilla = Casilla::create($data);
@@ -71,6 +70,14 @@ class CasillaController extends Controller
         return view('casilla/edit', compact('casilla'));
     }
 
+    function validateData(Request $request)
+    {
+        $request->validate([
+            'ubicacion' => 'required|max:100',
+        ]);
+        
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -80,13 +87,11 @@ class CasillaController extends Controller
      */
     public function update(Request $request, $id)
     {
-            $request->validate([
-                'ubicacion' => 'required|max:100',
-            ]);
-            $data['ubicacion']= $request->ubicacion;
-            Casilla::whereId($id)->update($data);
-            return redirect('casilla')
-            ->with('success', 'Actualizado correctamente...');
+        $this->validateData($request);
+        $data['ubicacion']= $request->ubicacion;
+        Casilla::whereId($id)->update($data);
+        return redirect('casilla')
+        ->with('success', 'Actualizado correctamente...');
     }
 
     /**
