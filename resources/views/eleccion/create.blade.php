@@ -7,7 +7,7 @@
 </style>
 <div class="card uper">
     <div class="card-header">
-        Agregar Eleccion
+        Agregar Elecciones
     </div>
     <div class="card-body">
         @if ($errors->any())
@@ -23,16 +23,46 @@
         enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group">
-                <label for="periodo">Periodo:</label>
-                <input type="text" id="periodo"
-                 class="form-control" name="periodo" />
+                @csrf
+                <label for="ubicacion">Periodo:</label>
+                <input type="text" class="form-control" name="periodo" />
             </div>
+
             <div class="form-group">
-                <label for="fecha">Periodo:</label>
-                <input type="text" id="fecha"
-                 class="form-control" name="fecha" />
+                @csrf
+                <label for="ubicacion">Fecha:</label>
+                <input type="date" class="form-control" name="fecha" />
             </div>
-            
+
+            <div class="form-group">
+                @csrf
+                <label for="ubicacion">Fecha de apertura:</label>
+                <input type="date" class="form-control" name="fechaapertura" />
+            </div>
+
+            <div class="form-group">
+                @csrf
+                <label for="ubicacion">Hora de apertura:</label>
+                <input type="time" class="form-control" name="horaapertura" />
+            </div>
+
+            <div class="form-group">
+                @csrf
+                <label for="ubicacion">Fecha de cierre:</label>
+                <input type="date" class="form-control" name="fechacierre" />
+            </div>
+
+            <div class="form-group">
+                @csrf
+                <label for="ubicacion">Hora de cierre:</label>
+                <input type="time" class="form-control" name="horacierre" />
+            </div>
+
+            <div class="form-group">
+                @csrf
+                <label for="ubicacion">Observaciones:</label>
+                <input type="text" class="form-control" name="observaciones" />
+            </div>
 
             <button type="submit" class="btn btn-primary">Guardar</button>
         </form>

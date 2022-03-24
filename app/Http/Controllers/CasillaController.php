@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Casilla;
 
-
 class CasillaController extends Controller
 {
     /**
@@ -16,8 +15,7 @@ class CasillaController extends Controller
     public function index()
     {
         $casillas = Casilla::all();
-        $today = now();
-        return view('casilla/list', compact('casillas','today'));
+        return view('casilla/list', compact('casillas'));
     }
 
     /**
@@ -39,11 +37,13 @@ class CasillaController extends Controller
     public function store(Request $request)
     {
         //print_r($request->all());
-        $this->validateData($request);
-        
+        $validacion = $request->validate([
+                'ubicacion' => 'required|max:100',
+        ]);
+
         $data['ubicacion'] = $request->ubicacion;
         $casilla = Casilla::create($data);
-        return redirect('casilla')->with('success',
+        return redirect('casilla')->with('succes',
         $casilla->ubicacion . ' guardado satisfactoriamente ...');
     }
 
@@ -66,16 +66,11 @@ class CasillaController extends Controller
      */
     public function edit($id)
     {
-        $casilla = Casilla::find($id);
+        //echo "Element $id to Edit";
+        $casilla = casilla::find($id);
         return view('casilla/edit', compact('casilla'));
-    }
 
-    function validateData(Request $request)
-    {
-        $request->validate([
-            'ubicacion' => 'required|max:100',
-        ]);
-        
+
     }
 
     /**
@@ -87,11 +82,19 @@ class CasillaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validateData($request);
+       
+
+        $request->validate([
+            'ubicacion' => 'required|max:100',
+        ]);
+
         $data['ubicacion']= $request->ubicacion;
         Casilla::whereId($id)->update($data);
         return redirect('casilla')
         ->with('success', 'Actualizado correctamente...');
+
+
+
     }
 
     /**
@@ -102,6 +105,8 @@ class CasillaController extends Controller
      */
     public function destroy($id)
     {
+        //echo "Element $id has deleted";
+
         Casilla::whereId($id)->delete();
         return redirect('casilla');
     }
