@@ -8,10 +8,14 @@ use App\Models\Casilla;
 use App\Models\Eleccion;
 use App\Models\Voto;
 use App\Models\Votocandidato;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class VotoController extends Controller
-{
+{   
+    private $DUPLICATE_KEY_CODE=23000;
+    private $DUPLICATE_KEY_MESSAGE="Ya existe un dato igual en la BD, ". 
+            "no se permiten duplicados";
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +23,8 @@ class VotoController extends Controller
      */
     public function index()
     {
-
+        $votos = Voto::all();
+        return view('voto/list', compact('votos'));
     }
 
     /**
@@ -35,6 +40,16 @@ class VotoController extends Controller
         return view('voto/create',compact('casillas','candidatos','elecciones'));
     }
 
+    private function validateVote($request){
+        foreach($request->all() as $key=>$value){
+            if (substr($key,0,10)=="candidato_")
+                if ($value<0){
+                    return false;
+                }
+        }
+        return true;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -43,11 +58,13 @@ class VotoController extends Controller
      */
     public function store(Request $request)
     {
-        
+            if (!($this->validateVote($request))){
+                return "Lo votos no pueden ser negativos";
+            }
             $candidatos=[];
-            foreach($request->all() as $k=>$v){
-                if (substr($k,0,10)=="candidato_")
-                    $candidatos[substr($k,10)]=$v;
+            foreach($request->all() as $key=>$value){
+                if (substr($key,0,10)=="candidato_")
+                    $candidatos[substr($key,10)]=$value;
             }
 
     
@@ -60,28 +77,34 @@ class VotoController extends Controller
             if ($request->hasFile('evidencia')) $request->file('evidencia')->move(public_path('pdf'), $evidenceFileName);
 
             $data['evidencia']=$evidenceFileName;
-            $success=false;
-            $message="save sucessfull";
+            
+            $message="save successfull";
+            $success=true;
             DB::beginTransaction();
             try {
+                //--- save to voto
                 $voto =Voto::create($data);
     
                 //--- save to votocandidato
-                foreach($candidatos as $k=>$v){
+                foreach($candidatos as $key=>$value){
                     $votocandidato=[];
                     $votocandidato['voto_id']= $voto->id;
-                    $votocandidato['candidato_id'] = $k;
-                    $votocandidato['votos']=$v;
+                    $votocandidato['candidato_id'] = $key;
+                    $votocandidato['votos']=$value;
                     Votocandidato::create($votocandidato);
                 }
                 DB::commit();
-                $success=true;
+                
             } catch (\Exception $e) {
+                $success=false;
                 DB::rollback();
-                $message=$e->getMessage();
+                if ($e->getCode()==$this->DUPLICATE_KEY_CODE)
+                    $message=$this->DUPLICATE_KEY_MESSAGE;
+                else
+                    $message=$e->getMessage();
             }
         
-        echo $message;
+        return view('message',compact('message','success'));
         
     }  
 
@@ -127,6 +150,19 @@ class VotoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        $success=true;
+        try {
+            Votocandidato::where('voto_id', '=', $id)->delete();
+            Voto::whereId($id)->delete();
+            DB::commit();
+            $message="Operacion exitosa";
+
+        } catch (\Exception $ex){
+            DB::rollBack();
+            $message = $ex->getMessage();
+            $success=false;
+        }     
+        return view ('message',compact('message','success'));
     }
 }
