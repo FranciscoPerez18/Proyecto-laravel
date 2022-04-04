@@ -91,21 +91,10 @@ class CandidatoController extends Controller
      */
     public function edit($id)
     {
-        $id = intval($id);
         $candidato = Candidato::find($id);
-        return $this->send($candidato,$id); 
+        return view ('candidato/edit', compact('candidato')); 
     }
- 
-    private function send($data,$id){
-      if ($data){
-          $resp =$this->sendResponse($data, 
-          "Operacion satisfactoria...");
-        }else{
-            $resp =
-            $this->sendError("No se encontro el candidato $id");
-        }
-        return ($resp);
-    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -129,7 +118,6 @@ class CandidatoController extends Controller
         }
 
         $currentValue = Candidato::find($id);
-        
         if (empty($fotoCandidato)) $fotoCandidato = $currentValue->foto;
         if (empty($perfilCandidato)) $perfilCandidato = $currentValue->perfil;
 
@@ -154,8 +142,7 @@ class CandidatoController extends Controller
      */
     public function destroy($id)
     {
-        $candidato = Candidato::find($id);
         Candidato::whereId($id)->delete();
-        return $this->send($candidato,$id);
+        return redirect('candidato');
     }
 }
