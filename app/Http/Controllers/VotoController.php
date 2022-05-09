@@ -8,12 +8,14 @@ use App\Models\Casilla;
 use App\Models\Eleccion;
 use App\Models\Voto;
 use App\Models\Votocandidato;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class VotoController extends Controller
 {
     private $DUPLICATE_KEY_CODE=2300;
-    private $DUPICATE_KEY_MESSAGE="ya existe un dato igual en la BD,". "no se permiten duplicados";
+    private $DUPICATE_KEY_MESSAGE="ya existe un dato igual en la BD,". 
+    "no se permiten duplicados";
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +39,15 @@ class VotoController extends Controller
         $elecciones = Eleccion::all();
         return view('voto/create', compact('casillas','candidatos','elecciones'));
     }
-
+    private function validateVote($request){
+        foreach($request->all() as $key=>$value){
+            if (substr($key,0,10)=="candidato_")
+                if ($value<0){
+                    return false;
+                }
+        }
+        return true;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -46,6 +56,9 @@ class VotoController extends Controller
      */
     public function store(Request $request)
     {
+        if (!($this->validateVote($request))){
+            return "Lo votos no pueden ser negativos";
+        }
         $candidatos=[];
             foreach($request->all() as $k=>$v){
                 if (substr($k,0,10)=="candidato_")
@@ -61,7 +74,7 @@ class VotoController extends Controller
             if ($request->hasFile('evidencia')) $request->file('evidencia')->move(public_path('pdf'), $evidenceFileName);
 
             $data['evidencia']=$evidenceFileName;
-            $success=false;
+            $success=true;
             $message="save sucessfull";
             DB::beginTransaction();
             try {
@@ -76,8 +89,9 @@ class VotoController extends Controller
                     Votocandidato::create($votocandidato);
                 }
                 DB::commit();
-                $success=true;
+               
             } catch (\Exception $e) {
+                $success=false;
                 DB::rollback();
                 if($e->getCode()==$this->$DUPLICATE_KEY_CODE)
                 $message=$this->$DUPICATE_KEY_MESSAGE;
@@ -107,9 +121,11 @@ class VotoController extends Controller
     public function edit($id)
     {
         $voto = Voto::find($id);
-        $casillas = Casilla::all();
-        $candidatos = Candidato::all();
-        return view ('voto/edit', compact('voto','casillas','candidatos')); 
+            //return view('voto/edit',compact('votos'));
+            $casillas = Casilla::all();
+            $candidatos = Candidato::all();
+            //$elecciones = Eleccion::all();
+            return view('voto/edit',compact('voto','casillas','candidatos'));   
     }
 
     /**
@@ -121,46 +137,41 @@ class VotoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!($this->validateVote($request))){
-            return "Lo votos no pueden ser negativos";
-        }
         $candidatos=[];
-        foreach($request->all() as $key=>$value){
-            if (substr($key,0,10)=="candidato_")
-                $candidatos[substr($key,10)]=$value;
-        }
+         foreach($request->all() as $k=>$v){
+             if (substr($k,0,10)=="candidato_")
+                 $candidatos[substr($k,10)]=$v;
+         }
+         $evidenceFileName ="";
+         if ($request->hasFile('evidencia')) {
+             $evidenceFileName = $request->file('evidencia')->getClientOriginalName();
+         }
+         if ($request->hasFile('evidencia')) $request->file('evidencia')->move(public_path('pdf'), $evidenceFileName);
+ 
+         $data['evidencia']=$evidenceFileName;
+         
 
-        $data['eleccion_id']=$request->eleccion_id;
-        $data['casilla_id']=$request->casilla_id;
-        $evidenceFileName ="";
-        if ($request->hasFile('evidencia')) {
-            $evidenceFileName = $request->file('evidencia')->getClientOriginalName();
-        }
-        if ($request->hasFile('evidencia')) $request->file('evidencia')->move(public_path('pdf'), $evidenceFileName);
+         $message="save sucessfull";
+         $success=true;
+         DB::beginTransaction();
+         try {
 
-        $data['evidencia']=$evidenceFileName;
-        
-        $message="save successfull";
-        $success=true;
-        DB::beginTransaction();
-        try {
-            //--- save to voto
             Voto::whereId($id)->update($data);
-            //--- save to votocandidato
-            foreach($candidatos as $key=>$value){
-                Votocandidato::where("voto_id","=",$id) 
-                    ->where("candidato_id","=",$key) 
-                    ->update(["votos"=>$value]);
+            foreach($candidatos as $k=>$v){
+                VotoCandidato::where("voto_id","=",$id)
+                ->where("candidato_id","=",$k)
+                ->update(["votos"=>$v]);
             }
             DB::commit();
-            
-        } catch (\Exception $e) {
-            $success=false;
-            DB::rollback();
-            $message=$e->getMessage();
-        }
-    
+
+            } catch (\Exception $e) {
+                $success=false;
+                DB::rollback();
+                $message=$e->getMessage();
+            }
+        
         return view('message',compact('message','success'));
+        
     }
 
     /**

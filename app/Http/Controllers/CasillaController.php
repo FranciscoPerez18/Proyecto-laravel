@@ -15,7 +15,7 @@ class CasillaController extends Controller
     public function index()
     {
         $casillas = Casilla::all();
-        return view('casilla/list', compact('casillas'));
+        return view('casilla/list', compact('casillas', 'today'));
     }
 
     /**
@@ -71,6 +71,13 @@ class CasillaController extends Controller
         return view('casilla/edit', compact('casilla'));
 
 
+    }
+    function validateData(Request $request)
+    {
+        $request->validate([
+            'ubicacion' => 'required|max:100',
+        ]);
+        
     }
 
     /**
