@@ -5,14 +5,13 @@
     margin-top: 40px;
     }
 </style>
-
 <div class="uper">
     @if(session()->get('success'))
     <div class="alert alert-success">
         {{ session()->get('success') }}
-    </div>
-    <br />
+    </div><br />
     @endif
+<a href="{{ route('generatePDF') }}" class="btn btn-success btn-sm">Export PDF</a>    
 <table class="table table-striped">
     <thead>
         <tr>
@@ -40,7 +39,6 @@
         </tr>
         @endforeach
     </tbody>
-    
-</table>
+ </table>
 <div>
 @endsection

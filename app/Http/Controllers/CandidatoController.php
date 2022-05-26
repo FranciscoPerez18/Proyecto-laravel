@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Candidato;
+use App\Models\Casilla;
+use Barryvdh\DomPDF\Facade\PDF as PDF;
 
 class CandidatoController extends Controller
 {
@@ -66,8 +68,7 @@ class CandidatoController extends Controller
         if ($request->hasFile('perfil')) $perfil->move(public_path('pdf'), $perfilcandidato);
         //print_r($campos);
         $candidato = Candidato::create($campos);
-        //echo $candidato->nombrecompleto . " se guardo correctamente ... ";
-        return redirect("candidato");
+        echo $candidato->nombrecompleto . " se guardo correctamente ... ";
     }
 
 
@@ -144,5 +145,16 @@ class CandidatoController extends Controller
     {
         Candidato::whereId($id)->delete();
         return redirect('candidato');
+    }
+
+    public function generatepdf(){
+        /*$casillas=Casilla::all();
+        $pdf=PDF::loadView('casilla/list',['casillas'=>$casillas]);
+        return $pdf->dowloand('archivo.pdf');
+        */
+        $html = "<div style='text-align:center;'><h1>PDF generado desde etiquetas html</h1>
+        <br><h3>&copy;cardoso.dev</h3> </div>";
+        $pdf = PDF::loadHTML($html);
+        return $pdf->download('archivo.pdf');
     }
 }

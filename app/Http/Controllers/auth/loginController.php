@@ -30,6 +30,7 @@ return Socialite::driver('facebook')->redirect();
 public function handleProviderFacebookCallback()
 {
 $auth_user = Socialite::driver('facebook')->user(); // Fetch authenticated user
-dd($auth_user);
+//dd($auth_user);
+return redirect('casilla');
 }
 }//--- End class
