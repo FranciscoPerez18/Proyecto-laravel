@@ -20,7 +20,7 @@ return view('auth/login');
 */
 public function redirectToFacebookProvider()
 {
-return Socialite::driver('facebook')->redirect();
+    return Socialite::driver('facebook')->redirect();
 }
 /**
 * Obtiene la información de Facebook
@@ -31,6 +31,6 @@ public function handleProviderFacebookCallback()
 {
 $auth_user = Socialite::driver('facebook')->user(); // Fetch authenticated user
 //dd($auth_user);
-return redirect('casilla');
+return redirect('candidato');
 }
 }//--- End class
