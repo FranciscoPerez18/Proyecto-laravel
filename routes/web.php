@@ -26,12 +26,13 @@ Route::get('/', function () {
 });
 
 Route::get('casilla/pdf', [CasillaController::class, 'generatepdf'])->name('generatePDF');
+//Route::get('voto/pdf', [VotoController::class, 'generatepdf'])->name('generatePDF');
 Route::get('download',[PDFController::class, 'download'])->name('download');
 Route::get('preview', [PDFController::class, 'preview']);
 Route::resource('casilla', CasillaController::class);
 Route::resource('candidato', CandidatoController::class);
 Route::resource('eleccion', EleccionController::class);
-//Route::resource('voto', VotoController::class);
+Route::resource('voto', VotoController::class);
 //Route::resource('auth', LoginController::class);
 Route::get('login',[LoginController::class,'index'])->name('login');
 Route::get('login/facebook', [LoginController::class,'redirectToFacebookProvider']);
@@ -39,6 +40,6 @@ Route::get('login/facebook/callback', [LoginController::class,'handleProviderFac
 //Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
 Route::middleware(['auth'])->group(function (){
-Route::resource('voto', VotoController::class);   
+//Route::resource('voto', VotoController::class);   
 });
 
