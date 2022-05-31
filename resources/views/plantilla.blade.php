@@ -16,7 +16,7 @@
     <script src="https://www.google.com/jsapi"></script>
     <header >
 
-<div id="header">
+<div id="header1">
         <ul class="nav">
 
             <li><a href="">Candidato</a>
