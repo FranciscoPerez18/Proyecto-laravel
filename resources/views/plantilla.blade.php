@@ -55,7 +55,7 @@
 						
 					</ul>
 				</li>
-
+                <li><a href="{{ asset('preview') }}">Grafica</a></li>
                 
 				
 			</ul>
