@@ -23,36 +23,40 @@
 
     <div id="header">
 			<ul class="nav">
-
+                <li><a href="{{ asset('logout') }}">Cerrar Sesion</a></li>
 				<li><a href="">Candidato</a>
 					    <ul>
+                            <li><a href="{{ asset('candidato/create') }}">Agregar</a></li>
 						    <li><a href="{{ asset('candidato') }}">Listar</a></li>
-						    <li><a href="{{ asset('candidato/create') }}">Agregar</a></li>
+						    
 				</li>
 					    </ul>
 				</li>
 				<li><a href="">Casilla</a>
 					<ul>
+                        <li><a href="{{ asset('casilla/create') }}">Agregar</a></li>
 						<li><a href="{{ asset('casilla') }}">Listar</a></li>
-						<li><a href="{{ asset('casilla/create') }}">Agregar</a></li>
+						
 					</ul>
 				</li>
 
                 <li><a href="">Eleccion</a>
 					<ul>
+                        <li><a href="{{ asset('eleccion/create') }}">Agregar</a></li>
 						<li><a href="{{ asset('eleccion') }}">Listar</a></li>
-						<li><a href="{{ asset('eleccion/create') }}">Agregar</a></li>
+						
 					</ul>
 				</li>
 
                 <li><a href="">Voto</a>
 					<ul>
+                        <li><a href="{{ asset('voto/create') }}">Agregar</a></li>
 						<li><a href="{{ asset('voto') }}">Listar</a></li>
-						<li><a href="{{ asset('voto/create') }}">Agregar</a></li>
+						
 					</ul>
 				</li>
 
-                <li><a href="{{ asset('logout') }}">Cerrar Sesion</a></li>
+                
 				
 			</ul>
 	</div>
@@ -66,7 +70,7 @@
             </div>
             <div class="col-md-8 text-center">
                 <h1>Instituto Tecnológico del Valle de Oaxaca</h1>
-                <h5>Elección de la reina ITVO</h5>
+                <h5>Elección de la reina y rey del ITVO</h5>
             </div>
             <div class="col-md-2">
 

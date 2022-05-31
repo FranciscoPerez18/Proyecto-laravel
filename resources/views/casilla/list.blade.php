@@ -11,7 +11,7 @@
         {{ session()->get('success') }}
     </div><br />
     @endif
-<a href="{{ route('generatePDF') }}" class="btn btn-success btn-sm">Export PDF</a>    
+<a href="{{ route('generatePDF') }}" class="btn btn-success btn-sm">Exportar PDF</a>    
 <table class="table table-striped">
     <thead>
         <tr>
