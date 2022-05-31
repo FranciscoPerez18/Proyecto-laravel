@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 
-use Socialite; #--- se agrega esta referencia
 class LoginController extends Controller
 {
 use AuthenticatesUsers;

@@ -47,7 +47,7 @@
                     <li><a href="{{ asset('voto/create') }}">Agregar</a></li>
                 </ul>
             </li>
-            
+            <li><a href="{{ asset('logout') }}">Cerrar Sesion</a></li>	
         </ul>
 </div>
     <header>
@@ -57,7 +57,7 @@
             </div>
             <div class="col-md-8 text-center">
                 <h1>Instituto Tecnológico del Valle de Oaxaca</h1>
-                <h5>Elección de la reina ITVO</h5>
+                <h5>Elección de la reina y rey del ITVO</h5>
             </div>
             <div class="col-md-2">
 
